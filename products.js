@@ -87,18 +87,18 @@ const vm = {
       }
     },
     deleteProduct() {
-      let id = this.tempProduct.id;
+      // let id = this.tempProduct.id;
       axios
         .delete(
-          // `${this.domain}/api/${this.api_path}/admin/product/${this.tempProduct.id}`,
-          `${this.domain}/api/${this.api_path}/admin/product/${id}}`,
+          `${this.domain}/api/${this.api_path}/admin/product/${this.tempProduct.id}`,
+          // `${this.domain}/api/${this.api_path}/admin/product/${id}}`,
         )
         .then((res) => {
-          this.getProducts(page)
+          this.getProducts()
           delProductModal.hide()
         })
         .catch((err) => {
-          alert(err.response.data.message)
+          console.log(err);
         })
     },
     createImage() {
