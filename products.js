@@ -121,6 +121,7 @@ const vm = {
   },
 }
 
+// 使用X-template 建立元件
 createApp(vm)
   .component('product-modal', {
     props: ['tempProduct', 'isNew', 'updateProduct'],
