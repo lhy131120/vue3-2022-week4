@@ -127,7 +127,7 @@ createApp(vm)
     template: '#product-modal-template',
   })
   .component('delete-modal', {
-    props: ['deleteProduct', ],
+    props: ['deleteProduct' ],
     template: 'delete-product-modal-template',
   })
   .mount('#app')
