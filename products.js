@@ -87,12 +87,14 @@ const vm = {
       }
     },
     deleteProduct() {
+      let id = this.tempProduct.id;
       axios
         .delete(
-          `${this.domain}/api/${this.api_path}/admin/product/${this.tempProduct.id}`,
+          // `${this.domain}/api/${this.api_path}/admin/product/${this.tempProduct.id}`,
+          `${this.domain}/api/${this.api_path}/admin/product/${id}}`,
         )
         .then((res) => {
-          this.getProducts()
+          this.getProducts(page)
           delProductModal.hide()
         })
         .catch((err) => {
@@ -129,6 +131,6 @@ createApp(vm)
   })
   .component('delete-modal', {
     props: ['deleteProduct' ],
-    template: 'delete-product-modal-template',
+    template: '#delete-product-modal-template',
   })
   .mount('#app')
