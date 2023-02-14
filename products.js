@@ -74,14 +74,13 @@ const vm = {
       }
     },
     createImage() {
-      // 新增空Array, 並
+      // 新增空Array, 並建立需要定義的格式
       this.tempProduct.imagesUrl = []
       this.tempProduct.imagesUrl.push('')
     },
   },
 }
 
-// 使用X-template 建立元件
 createApp(vm)
   .component('product-modal', {
     props: ['tempProduct', 'isNew'],

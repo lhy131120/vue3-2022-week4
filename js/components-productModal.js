@@ -122,6 +122,7 @@ export default {
       // 由於create / edit都使用同一個model, 用let定義,url/method會根據不用而改變
       let url = `${this.domain}/api/${this.api_path}/admin/product`
       let method = 'post'
+      console.log(this.tempProduct)
 
       // isNew = 新增 / !isNew = 編輯
       if (!this.isNew) {
@@ -129,7 +130,7 @@ export default {
         method = 'put'
       }
 
-      axios[method](url, { data: tempProduct })
+      axios[method](url, { data: this.tempProduct })
         .then((res) => {
           alert(res.data.message)
           this.hideModal()
