@@ -129,7 +129,7 @@ export default {
         method = 'put'
       }
 
-      axios[method](url, { data: this.tempProduct })
+      axios[method](url, { data: tempProduct })
         .then((res) => {
           alert(res.data.message)
           this.hideModal()
