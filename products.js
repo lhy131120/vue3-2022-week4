@@ -1,10 +1,8 @@
 // import module {}
 import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.45/vue.esm-browser.min.js'
-import pagination from './js/moule-pagination.js';
-// import deleteModal from './js/module-deleteModal.js';
-
-let productModal = null
-let delProductModal = null
+import pagination from './js/components-pagination.js'
+import productModal from './js/components-productModal.js'
+import deleteModal from './js/components-deleteModal.js'
 
 const vm = {
   data() {
@@ -21,7 +19,17 @@ const vm = {
   },
   components: {
     pagination,
-    // deleteModal
+    productModal,
+    deleteModal,
+  },
+  mounted() {
+    // checkuser前先取cookie
+    const cookieValue = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('vue2022Ex='))
+      ?.split('=')[1]
+    axios.defaults.headers.common['Authorization'] = cookieValue
+    this.checkUser()
   },
   methods: {
     checkUser() {
@@ -41,33 +49,12 @@ const vm = {
       axios
         .get(`${this.domain}/api/${this.api_path}/admin/products/?page=${page}`)
         .then((res) => {
-          console.log(res.data)
+          // console.log(res.data)
           this.products = res.data.products
           this.page = res.data.pagination
         })
         .catch((err) => {
           alert(err.data.message)
-        })
-    },
-    updateProduct() {
-      // 由於create / edit都使用同一個model, 用let定義,url/method會根據不用而改變
-      let url = `${this.domain}/api/${this.api_path}/admin/product`
-      let method = 'post'
-
-      // isNew = 新增 / !isNew = 編輯
-      if (!this.isNew) {
-        url = `${this.domain}/api/${this.api_path}/admin/product/${this.tempProduct.id}`
-        method = 'put'
-      }
-
-      axios[method](url, { data: this.tempProduct })
-        .then((res) => {
-          alert(res.data.message)
-          productModal.hide()
-          this.getProducts()
-        })
-        .catch((err) => {
-          alert(err.response.data.message)
         })
     },
     openModal(status, product) {
@@ -76,30 +63,15 @@ const vm = {
           imagesUrl: [],
         }
         this.isNew = true
-        productModal.show()
+        this.$refs.productModal.myModal.show()
       } else if (status === 'edit') {
         this.tempProduct = { ...product }
         this.isNew = false
-        productModal.show()
+        this.$refs.productModal.myModal.show()
       } else if (status === 'delete') {
         this.tempProduct = { ...product }
-        delProductModal.show()
+        this.$refs.delModal.myModal.show()
       }
-    },
-    deleteProduct() {
-      // let id = this.tempProduct.id;
-      axios
-        .delete(
-          `${this.domain}/api/${this.api_path}/admin/product/${this.tempProduct.id}`,
-          // `${this.domain}/api/${this.api_path}/admin/product/${id}}`,
-        )
-        .then((res) => {
-          this.getProducts()
-          delProductModal.hide()
-        })
-        .catch((err) => {
-          console.log(err);
-        })
     },
     createImage() {
       // 新增空Array, 並
@@ -107,30 +79,51 @@ const vm = {
       this.tempProduct.imagesUrl.push('')
     },
   },
-  mounted() {
-    // checkuser前先取cookie
-    const cookieValue = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('vue2022Ex='))
-      ?.split('=')[1]
-    axios.defaults.headers.common['Authorization'] = cookieValue
-    this.checkUser()
-
-    productModal = new bootstrap.Modal(document.getElementById('productModal'))
-    delProductModal = new bootstrap.Modal(
-      document.getElementById('delProductModal'),
-    )
-  },
 }
 
 // 使用X-template 建立元件
 createApp(vm)
   .component('product-modal', {
-    props: ['tempProduct', 'isNew', 'updateProduct'],
+    props: ['tempProduct', 'isNew'],
     template: '#product-modal-template',
-  })
-  .component('delete-modal', {
-    props: ['deleteProduct' ],
-    template: '#delete-product-modal-template',
-  })
-  .mount('#app')
+    data() {
+      return {
+        domain: 'https://vue3-course-api.hexschool.io/v2',
+        api_path: 'sakimotorin-vue2022',
+      }
+    },
+    mounted() {
+      productModal = new bootstrap.Modal(
+        document.getElementById('productModal'),
+      )
+    },
+    methods: {
+      updateProduct() {
+        // 由於create / edit都使用同一個model, 用let定義,url/method會根據不用而改變
+        let url = `${this.domain}/api/${this.api_path}/admin/product`
+        let method = 'post'
+
+        // isNew = 新增 / !isNew = 編輯
+        if (!this.isNew) {
+          url = `${this.domain}/api/${this.api_path}/admin/product/${this.tempProduct.id}`
+          method = 'put'
+        }
+
+        axios[method](url, { data: this.tempProduct })
+          .then((res) => {
+            alert(res.data.message)
+            this.hideModal()
+            this.$emit('getdata')
+          })
+          .catch((err) => {
+            alert(err.response.data.message)
+          })
+      },
+      openModal() {
+        productModal.show()
+      },
+      hideModal() {
+        productModal.hide()
+      },
+    },
+  }).mount('#app');
