@@ -49,7 +49,7 @@ const vm = {
       axios
         .get(`${this.domain}/api/${this.api_path}/admin/products/?page=${page}`)
         .then((res) => {
-          // console.log(res.data)
+          console.log(res.data)
           this.products = res.data.products
           this.page = res.data.pagination
         })
