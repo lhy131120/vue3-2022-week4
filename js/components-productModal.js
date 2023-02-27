@@ -93,7 +93,6 @@ export default {
                 <label class="form-check-label" for="is_enabled">是否啟用</label>
               </div>
             </div>
-            
             <div class="row">
               <div class="col-6">
                 <label for="grade" class="form-label">評級</label>
@@ -103,7 +102,6 @@ export default {
                 </select>
               </div>
             </div>
-
           </div>
         </div>
       </div>
